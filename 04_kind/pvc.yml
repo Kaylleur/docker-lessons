@@ -1,0 +1,17 @@
+# here is an example of a PVC host path linked to the PV my-app
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: my-app-pvc
+  namespace: my-app
+  labels:
+    app: my-app
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+    storage: 1Gi
+  selector:
+    matchLabels:
+    app: my-app

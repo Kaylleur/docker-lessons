@@ -1,0 +1,16 @@
+# here is an example of persistent volume with host path
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: my-app-pv
+  labels:
+    app: my-app
+spec:
+  capacity:
+      storage: 1Gi
+  accessModes:
+      - ReadWriteOnce
+  hostPath:
+      path: /tmp/my-app-pv
+  persistentVolumeReclaimPolicy: Retain

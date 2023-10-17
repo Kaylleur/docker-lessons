@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app
+  namespace: my-app
+  labels:
+    app: my-app
+spec:
+  containers:
+    - name: my-app
+      image: kaylleur/myapp:1.0.2
+      env:
+        - name: TITLE
+          value: Toto
+      ports:
+        - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: my-app-config
+          volumeMounts:
+            - mountPath: /opt/my-app
+              name: my-file
+      volumes:
+        - name: my-file
+          configMap:
+            name: my-app-config
+            items:
+              - key: MY_FILE
+                path: my_file.txt

@@ -1,0 +1,36 @@
+# here is an example of deployment of my-app
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: my-app-deployment
+  namespace: my-app
+  labels:
+    app: my-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+    app: my-app
+  template:
+    metadata:
+    labels:
+      app: my-app
+    spec:
+    containers:
+      - name: my-app
+        ports:
+          - containerPort: 3000
+        envFrom:
+          - configMapRef:
+              name: my-app-config
+        volumeMounts:
+          - mountPath: /opt/my-app
+            name: my-file
+    volumes:
+      - name: my-file
+        configMap:
+          name: my-app-config
+          items:
+            - key: MY_FILE
+              path: my_file.txt

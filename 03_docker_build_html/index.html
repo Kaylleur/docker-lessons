@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASP Color Changer</title>
+    <style>
+        body, html {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 5em;
+            font-weight: bold;
+            text-align: center;
+            margin: 0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="aspText">ASP</h1>
+    <script>
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function changeColor() {
+            const aspText = document.getElementById('aspText');
+            aspText.style.color = getRandomColor();
+        }
+
+        setInterval(changeColor, 1000);
+    </script>
+</body>
+</html>
