@@ -11,13 +11,13 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-    app: my-app
+      app: my-app
   template:
     metadata:
-    labels:
-      app: my-app
+      labels:
+        app: my-app
     spec:
-    containers:
+      containers:
       - name: my-app
         ports:
           - containerPort: 3000
@@ -27,10 +27,10 @@ spec:
         volumeMounts:
           - mountPath: /opt/my-app
             name: my-file
-    volumes:
-      - name: my-file
-        configMap:
-          name: my-app-config
-          items:
-            - key: MY_FILE
-              path: my_file.txt
+      volumes:
+        - name: my-file
+          configMap:
+            name: my-app-config
+            items:
+              - key: MY_FILE
+                path: my_file.txt

@@ -8,8 +8,12 @@ metadata:
 spec:
   containers:
     - name: my-app
-      image: kaylleur/myapp:1.0.2 
+      image: kaylleur/myapp:1.0.2
       env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         - name: TITLE
           value: Toto
       ports:
