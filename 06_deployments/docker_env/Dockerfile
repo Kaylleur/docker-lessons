@@ -4,9 +4,6 @@ FROM node:14
 # Création du répertoire de travail dans le conteneur
 WORKDIR /usr/src/app
 
-# Copie du fichier package.json et package-lock.json (si présent)
-COPY package*.json ./
-
 # Installation des dépendances
 RUN npm install express
 

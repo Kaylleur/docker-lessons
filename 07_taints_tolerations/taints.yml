@@ -1,0 +1,52 @@
+# here is an example of deployment of my-app
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: web-deployment
+  labels:
+    app: web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      tolerations:
+        - key: "backend"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+      containers:
+      - name: web
+        image: nginx
+        ports:
+          - containerPort: 80
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: web-deployment2
+  labels:
+    app: web2
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web2
+  template:
+    metadata:
+      labels:
+        app: web2
+    spec:
+      containers:
+        - name: web
+          image: nginx
+          ports:
+            - containerPort: 80

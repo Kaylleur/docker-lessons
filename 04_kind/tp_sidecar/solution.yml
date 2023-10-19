@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: log
+  labels:
+    app: log
+spec:
+  initContainers:
+    - name: init-log
+      image: busybox
+      command: [ "sh", "-c", "echo 'access.log' > /tmp/log/access.log" ]
+      volumeMounts:
+        - mountPath: /tmp/log
+          name: log 
+  containers:
+    - name: tail-log
+      image: busybox
+      command: [ "tail", "-f", "/tmp/log/access.log" ]
+      volumeMounts:
+        - mountPath: /tmp/log
+          name: log
+    - name: log
+      image: nginx
+      volumeMounts:
+        - mountPath: /var/log/nginx
+          name: log
+      ports:
+        - containerPort: 80
+          name: http
+  volumes:
+    - name: log
+      emptyDir: { }
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: log
+  labels:
+    app: log
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: log

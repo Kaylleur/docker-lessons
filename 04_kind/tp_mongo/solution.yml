@@ -1,0 +1,79 @@
+# here is an example of mongodb pod yml definition and a mongo express pod definition
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mongodb-pod
+  labels:
+    app: mongodb
+spec:
+  containers:
+    - name: mongodb
+      image: mongo:latest
+      ports:
+        - containerPort: 27017
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service
+spec:
+  selector:
+    app: mongodb
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mongo-express-pod
+  labels:
+    app: mongo-express
+spec:
+  containers:
+    - name: mongo-express
+      image: mongo-express:latest
+      ports:
+        - containerPort: 8081
+      env:
+        - name: ME_CONFIG_MONGODB_SERVER
+          value: mongodb-service
+        - name: ME_CONFIG_MONGODB_PORT
+          value: "27017"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-express-service
+spec:
+  selector:
+    app: mongo-express
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mongo-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+    - http:
+        paths:
+          - pathType: Prefix
+            path: /(.*)
+            backend:
+              service:
+                name: mongo-express-service
+                port:
+                  number: 8081

@@ -1,11 +1,14 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: mon-pod
+  name: mon-pod3
+  labels:
+    app: mon-app
 spec:
   containers:
     - name: mon-conteneur
-      image: nom_de_votre_image:latest # Remplacez par le nom de votre image Docker
+      imagePullPolicy: Always
+      image: kaylleur/myapp:3.0.0
       ports:
         - containerPort: 3000
       env:
@@ -25,3 +28,37 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mon-service
+spec:
+  selector:
+    app: mon-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mon-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+    - http:
+        paths:
+          - pathType: Prefix
+            path: /myapp(.*)
+            backend:
+              service:
+                name: mon-service
+                port:
+                  number: 80

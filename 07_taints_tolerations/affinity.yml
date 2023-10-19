@@ -1,0 +1,49 @@
+# here is an example of deployment of my-app
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: web-deployment
+  labels:
+    app: web
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      tolerations:
+        - key: "node.kubernetes.io/unreachable"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 20
+        - key: "node.kubernetes.io/not-ready"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 20
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: country
+                    operator: In
+                    values:
+                      - france
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 50
+              preference:
+                matchExpressions:
+                  - key: country
+                    operator: In
+                    values:
+                      - france
+      containers:
+        - name: web
+          image: nginx
+          ports:
+            - containerPort: 80
