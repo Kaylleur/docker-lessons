@@ -8,10 +8,10 @@ spec:
   initContainers:
     - name: init-log
       image: busybox
-      command: [ "sh", "-c", "echo 'access.log' > /tmp/log/access.log" ]
+      command: [ "sh", "-c", "echo 'totoro' > /tmp/log/access.log" ]
       volumeMounts:
         - mountPath: /tmp/log
-          name: log 
+          name: log
   containers:
     - name: tail-log
       image: busybox
