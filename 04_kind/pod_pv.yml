@@ -16,5 +16,5 @@ spec:
           name: my-pvc
   volumes:
     - name: my-pvc
-      persistentVolumeClaim:
-        claimName: my-app-pvc
+      hostPath:
+        path: /tmp/my-app-pv

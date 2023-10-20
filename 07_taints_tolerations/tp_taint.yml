@@ -1,0 +1,71 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: red
+  labels:
+    app: red
+spec:
+  tolerations:
+    - key: "Red"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+  containers:
+    - name: red
+      image: nginx
+      ports:
+      - containerPort: 80
+
+---
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: blue
+  labels:
+    app: blue
+spec:
+  tolerations:
+    - key: "Blue"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+  containers:
+    - name: blue
+      image: nginx
+      ports:
+        - containerPort: 80
+
+---
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: purple
+  labels:
+    app: purple
+spec:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - preference:
+            matchExpressions:
+              - key: "color"
+                operator: "In"
+                values:
+                  - "red"
+          weight: 50
+  tolerations:
+    - key: "Blue"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+    - key: "Red"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+  containers:
+    - name: purple
+      image: nginx
+      ports:
+        - containerPort: 80
