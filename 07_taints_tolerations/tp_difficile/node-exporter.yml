@@ -1,0 +1,63 @@
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: node-exporter
+spec:
+    selector:
+        matchLabels:
+          app: node-exporter
+    template:
+        metadata:
+          labels:
+              app: node-exporter
+        spec:
+          tolerations:
+            - key: "node-role.kubernetes.io/control-plane"
+              operator: "Exists"
+              effect: "NoSchedule"
+          containers:
+          - name: node-exporter
+            image: prom/node-exporter
+            args:
+              - "--path.procfs=/host/proc"
+              - "--path.rootfs=/rootfs"
+              - "--path.sysfs=/host/sys"
+              - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)"
+            ports:
+              - containerPort: 9100
+            volumeMounts:
+              - name: proc
+                mountPath: /host/proc
+                readOnly:  true
+              - name: sys
+                mountPath: /host/sys
+                readOnly: true
+              - name: root
+                mountPath: /rootfs
+                mountPropagation: HostToContainer
+                readOnly: true
+          volumes:
+            - name: proc
+              hostPath:
+                path: /proc
+            - name: sys
+              hostPath:
+                path: /sys
+            - name: root
+              hostPath:
+                path: /
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-exporter
+spec:
+    selector:
+        app: node-exporter
+    ports:
+      - name: http
+        port: 9100
+        protocol: TCP
+        targetPort: 9100
