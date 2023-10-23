@@ -12,9 +12,9 @@ spec:
       ports:
         - containerPort: 80
       volumeMounts:
-        - mountPath: /tmp/my-app-pv
-          name: my-pvc
+        - mountPath: /tmp/my-app
+          name: my-hostpath
   volumes:
-    - name: my-pvc
-      persistentVolumeClaim:
-        claimName: my-app-pvc
+    - name: my-hostpath
+      hostPath:
+        path: /tmp/my-app
