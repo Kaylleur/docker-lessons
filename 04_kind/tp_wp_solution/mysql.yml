@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  labels:
+    app: mysql
+data:
+  MYSQL_ROOT_PASSWORD: "root"
+  MYSQL_DATABASE: "wordpress"
+  MYSQL_USER: "wpuser"
+  MYSQL_PASSWORD: "wppassword"
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-pod
+  labels:
+    app: mysql-label
+spec:
+  containers:
+    - name: mysql
+      image: mysql
+      envFrom:
+        - configMapRef:
+            name: mysql-config
+      volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mydata
+  volumes:
+    - name: mydata
+      hostPath:
+        path: /tmp/mysql-data
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+  labels:
+    app: mysql-label
+spec:
+  selector:
+    app: mysql-label
+  ports:
+    - port: 3306
+      targetPort: 3306

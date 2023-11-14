@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: my-app
+  name: my-app-hp
   namespace: my-app
   labels:
     app: my-app
@@ -12,7 +12,7 @@ spec:
       ports:
         - containerPort: 80
       volumeMounts:
-        - mountPath: /tmp/my-app
+        - mountPath: /opt/my-app
           name: my-hostpath
   volumes:
     - name: my-hostpath
